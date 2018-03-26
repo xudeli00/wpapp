@@ -43,12 +43,23 @@ def index():
             data = request.data
             app.logger.debug("Get post data:" + str(data))
             recMsg = receive.parse_xml(data)
-            if isinstance(recMsg, receive.Msg) and recMsg.MsgType == 'text':
+            if isinstance(recMsg, receive.Msg):
                 toUser = recMsg.FromUserName
                 fromUser = recMsg.ToUserName
-                content = "test"
-                replyMsg = reply.TextMsg(toUser, fromUser, content)
-                return replyMsg.send()
+                if recMsg.MsgType == 'text':
+                    content = "test"
+                    #口算题
+                    if recMsg.Content == "\xe5\x8f\xa3\xe7\xae\x97\xe9\xa2\x98":
+                        import math20
+                        rslt = math20.main()
+                        for _m in rslt:
+                            content += "%s %s %s =\n" % _m
+                    replyMsg = reply.TextMsg(toUser, fromUser, content)
+                    return replyMsg.send()
+                if recMsg.MsgType == 'image':
+                    mediaId = recMsg.MediaId
+                    replyMsg = reply.ImageMsg(toUser, fromUser, mediaId)
+                    return replyMsg.send()
             else:
                 print "Process later."
                 return "success"
