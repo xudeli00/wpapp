@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, request
 from config import token
 import hashlib
@@ -12,7 +13,6 @@ app = Flask(__name__)
 
 @app.route("/",methods = ['GET', 'POST'])
 def index():
-
     if request.method == 'GET':
         try:
             signature = request.args.get("signature")
@@ -49,9 +49,10 @@ def index():
                 if recMsg.MsgType == 'text':
                     content = "test"
                     #口算题
-                    if recMsg.Content == "\xe5\x8f\xa3\xe7\xae\x97\xe9\xa2\x98":
+                    if recMsg.Content == '口算题':
                         import math20
                         rslt = math20.main()
+                        content = "20以内口算题：\n"
                         for _m in rslt:
                             content += "%s %s %s =\n" % _m
                     replyMsg = reply.TextMsg(toUser, fromUser, content)
